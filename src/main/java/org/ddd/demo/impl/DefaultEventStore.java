@@ -32,7 +32,7 @@ public class DefaultEventStore implements EventStore {
     public List<StorableEvent> findNotFinishEvent() {
         return inMemoryCache.values()
                 .stream()
-                .filter(storableEvent -> !storableEvent.isFinished())
+                .filter(StorableEvent::isRunning)
                 .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,9 @@
 package org.ddd.event.domain;
 
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -8,10 +12,14 @@ import java.util.stream.Collectors;
  * @author Michael
  * @date 2021/5/30 19:06
  */
+@Setter
+@ToString
 public class StorableEvent {
+    private final static int MAX_FAIL_TIMES = 5;
     private Event event;
-    private boolean finished = true;
+    private EventStatus status;
     private Set<StorableSubscriber> subscribers;
+    private int numOfConsumer;
 
     public StorableEvent(Event event) {
         this.event = event;
@@ -24,7 +32,6 @@ public class StorableEvent {
         StorableSubscriber storableSubscriber = new StorableSubscriber(getEventId(),
                 eventSubscriber.getSubscriberType());
         subscribers.add(storableSubscriber);
-        finished = false;
     }
 
     public void subscriberConsumed(String subscriberType) {
@@ -36,30 +43,47 @@ public class StorableEvent {
                 subscriber.consume();
             }
         }
-        checkIsFinished();
+        addConsumerNumber();
+        changeStatus();
     }
 
-    private void checkIsFinished() {
-        if (subscribers == null) {
-            finished = true;
+    private void addConsumerNumber() {
+        numOfConsumer++;
+    }
+
+    private void changeStatus() {
+        if (subscribers == null || subscribers.stream().allMatch(StorableSubscriber::isConsumed)) {
+            this.status = EventStatus.FINISHED;
             return;
         }
-        if (subscribers.stream().allMatch(StorableSubscriber::isConsumed)) {
-            finished = true;
+
+        if (this.numOfConsumer >= MAX_FAIL_TIMES) {
+            this.status = EventStatus.FAILED;
+            return;
         }
+
+        this.status = EventStatus.RUNNING;
     }
 
-    public Set<StorableSubscriber> getNotHandleSubscriber(){
-        return subscribers.stream()
+    public Set<StorableSubscriber> getNotHandleSubscriber() {
+        return Collections.unmodifiableSet(subscribers.stream()
                 .filter(storableSubscriber -> !storableSubscriber.isConsumed())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
+    }
+
+    public boolean isRunning() {
+        return this.status == EventStatus.RUNNING;
     }
 
     public boolean isFinished() {
-        return finished;
+        return this.status == EventStatus.FINISHED;
     }
 
-    public String getEventId(){
+    public boolean isFailed() {
+        return this.status == EventStatus.FAILED;
+    }
+
+    public String getEventId() {
         return event.getEventId();
     }
 
@@ -67,12 +91,9 @@ public class StorableEvent {
         return event;
     }
 
-    @Override
-    public String toString() {
-        return "StorableEvent{" +
-                "event=" + event +
-                ", finished=" + finished +
-                ", subscribers=" + subscribers +
-                '}';
+    private enum EventStatus {
+        RUNNING,
+        FAILED,
+        FINISHED;
     }
 }
