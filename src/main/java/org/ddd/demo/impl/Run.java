@@ -1,6 +1,7 @@
 package org.ddd.demo.impl;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.ddd.event.domain.EventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2021/5/29 16:34
  */
 @Component
+@Slf4j
 public class Run implements CommandLineRunner {
     @Autowired
     private EventPublisher publisher;
@@ -21,7 +23,8 @@ public class Run implements CommandLineRunner {
     public void run(String... args) throws Exception {
         TestEvent testEvent = new TestEvent(this);
         publisher.publishEvent(testEvent);
-        System.out.println("=====事务准备提交======");
-        Thread.sleep(1000);
+
+        FailEvent failEvent = new FailEvent(this);
+        publisher.publishEvent(failEvent);
     }
 }

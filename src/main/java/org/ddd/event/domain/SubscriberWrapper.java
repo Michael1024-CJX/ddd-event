@@ -37,12 +37,11 @@ public class SubscriberWrapper {
         if (o == null || getClass() != o.getClass()) return false;
         SubscriberWrapper that = (SubscriberWrapper) o;
         return Objects.equals(subscriberType, that.subscriberType) &&
-                Objects.equals(eventType, that.eventType) &&
-                Objects.equals(eventSubscriber, that.eventSubscriber);
+                Objects.equals(eventType, that.eventType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(subscriberType, eventType, eventSubscriber);
+        return Objects.hash(subscriberType, eventType);
     }
 }

@@ -2,6 +2,7 @@ package org.ddd.event.domain;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Michael
@@ -48,12 +49,22 @@ public class StorableEvent {
         }
     }
 
+    public Set<StorableSubscriber> getNotHandleSubscriber(){
+        return subscribers.stream()
+                .filter(storableSubscriber -> !storableSubscriber.isConsumed())
+                .collect(Collectors.toSet());
+    }
+
     public boolean isFinished() {
         return finished;
     }
 
     public String getEventId(){
         return event.getEventId();
+    }
+
+    public Event getEvent() {
+        return event;
     }
 
     @Override
