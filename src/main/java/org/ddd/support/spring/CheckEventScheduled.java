@@ -4,19 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.ddd.event.domain.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author chenjx@dist.com.cn
+ * @author Michael
  * @date 2021/6/1 13:22
  */
 @Component
@@ -46,29 +43,8 @@ public class CheckEventScheduled {
             return;
         }
         for (StorableEvent storableEvent : notFinishEvent) {
-            executor.execute(() -> reConsumerEvent(storableEvent));
+            RetryOnSubscribeFail retryTask = new RetryOnSubscribeFail(subscriberHolder, storableEvent);
+            executor.execute(retryTask::reConsumerEvent);
         }
-    }
-
-    public void reConsumerEvent(StorableEvent storableEvent) {
-        Set<StorableSubscriber> notHandleSubscriber = storableEvent.getNotHandleSubscriber();
-
-        for (StorableSubscriber storableSubscriber : notHandleSubscriber) {
-            executor.execute(() -> reHandleEvent(storableEvent, storableSubscriber.getSubscriberType()));
-        }
-    }
-
-    @Transactional
-    public void reHandleEvent(StorableEvent storableEvent, String subscriberType){
-        System.out.println("事务是否存在：" + TransactionSynchronizationManager.isSynchronizationActive());
-        executeSubscriber(subscriberType, storableEvent.getEvent());
-        log.info("更新storableEvent[{}]", storableEvent);
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void executeSubscriber(String subscriberType, Event event) {
-        SubscriberWrapper subscriber = subscriberHolder.getSubscriber(subscriberType);
-        EventSubscriber eventSubscriber = subscriber.getEventSubscriber();
-        eventSubscriber.handle(event);
     }
 }
