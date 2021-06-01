@@ -23,7 +23,6 @@ public class EventMulticaster implements TransactionCallback {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void multicastEvent() {
         for (SubscriberWrapper subscriber : eventSubscribers) {
-            System.out.println("=============订阅者接收事件=======" + subscriber + " --> " + event);
             DefaultExecutor.execute(() -> subscriber.getEventSubscriber().handle(event));
         }
     }

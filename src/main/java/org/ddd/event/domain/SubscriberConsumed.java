@@ -18,7 +18,6 @@ public class SubscriberConsumed implements TransactionCallback{
 
     @Override
     public void callback() {
-        System.out.println("订阅者执行成功，修改事件状态");
         StorableEvent storableEvent = eventStore.find(eventId);
         storableEvent.subscriberConsumed(subscriberType);
         eventStore.storeEvent(storableEvent);

@@ -19,7 +19,6 @@ public class DefaultEventStore implements EventStore {
     @Override
     @Transactional
     public void storeEvent(StorableEvent event) {
-        System.out.println("存储事件：" + event);
         inMemoryCache.put(event.getEventId(), event);
     }
 

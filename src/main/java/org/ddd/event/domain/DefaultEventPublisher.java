@@ -21,7 +21,6 @@ public class DefaultEventPublisher implements EventPublisher {
 
     @Override
     public void publishEvent(Event event) {
-        System.out.println("发布事件：" + event);
         Set<SubscriberWrapper> subscriber = subscriberHolder.getSubscriber(event);
         StorableEvent storableEvent = new StorableEvent(event);
         subscriber.forEach(storableEvent::addSubscriber);
