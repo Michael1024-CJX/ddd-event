@@ -7,3 +7,8 @@
 ## 发布事件的时序图
 可以看到事件的存储与对聚合的操作在同一个事务中，这样能保证事件不丢失。至于存储的方式，可以自行根据项目上的技术选型实现，只需要实现EventStore接口，并将其注入需要的bean即可。
 ![publishEvent](https://github.com/Michael1024-CJX/ddd-event/blob/main/image/publishEvent.png)
+
+## 订阅者订阅事件的时序图
+multicaster对象监听事务完成的情况，after commit后，将开始异步将事件交由订阅者处理。并利用AOP将对事件的处理加入subscriber.handle的同一个
+事务中。
+![handleEvent](https://github.com/Michael1024-CJX/ddd-event/blob/main/image/handleEvent.png)
