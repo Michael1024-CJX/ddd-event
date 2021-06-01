@@ -5,4 +5,5 @@
   领域事件需要在事务提交成功的时候发布，所以需要监听事务的状态。本项目基于事务的回调机制，实现对事件的保存，失败重发。
 
 ## 发布事件的时序图
+可以看到事件的存储与对聚合的操作在同一个事务中，这样能保证事件不丢失。至于存储的方式，可以自行根据项目上的技术选型实现，只需要实现EventStore接口，并将其注入需要的bean即可。
 ![publishEvent](https://github.com/Michael1024-CJX/ddd-event/blob/main/image/publishEvent.png)
