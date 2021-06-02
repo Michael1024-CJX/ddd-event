@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author chenjx@dist.com.cn
+ * @author Michael
  * @date 2021/6/1 21:38
  */
 public class EventTest {

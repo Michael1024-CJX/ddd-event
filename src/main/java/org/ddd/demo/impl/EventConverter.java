@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author chenjx@dist.com.cn
+ * @author Michael
  * @date 2021/6/2 9:43
  */
 public class EventConverter {

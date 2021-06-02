@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import java.sql.Timestamp;
 
 /**
- * @author chenjx@dist.com.cn
+ * @author Michael
  * @date 2021/6/2 9:18
  */
 @Data
