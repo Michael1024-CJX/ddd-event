@@ -25,6 +25,7 @@ public class StorableEvent {
 
     public StorableEvent(Event event) {
         this.event = event;
+        this.status = EventStatus.RUNNING;
     }
 
     public void addSubscriber(SubscriberWrapper eventSubscriber) {

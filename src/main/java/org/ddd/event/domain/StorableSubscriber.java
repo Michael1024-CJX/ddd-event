@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.Instant;
+
 /**
  * @author Michael
  * @date 2021/5/31 14:03
@@ -16,7 +18,7 @@ public class StorableSubscriber {
     private String eventId;
     private String subscriberType;
     private boolean consumed;
-    private long consumedOn;
+    private Instant consumedOn;
 
     public StorableSubscriber(String eventId, String subscriberType) {
         this.eventId = eventId;
@@ -26,7 +28,7 @@ public class StorableSubscriber {
     public void consume() {
         if (!consumed){
             this.consumed = true;
-            consumedOn = System.currentTimeMillis();
+            consumedOn = Instant.now();
         }
     }
 

@@ -1,5 +1,6 @@
 package org.ddd.event.domain;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -9,11 +10,11 @@ import java.util.UUID;
 public abstract class EventObject implements Event{
     protected String eventId = UUID.randomUUID().toString();
     protected Object source;
-    protected long occurredTime;
+    protected Instant occurredTime;
 
     public EventObject(Object source) {
         this.source = source;
-        this.occurredTime = System.currentTimeMillis();
+        this.occurredTime = Instant.now();
     }
 
     @Override
@@ -22,7 +23,7 @@ public abstract class EventObject implements Event{
     }
 
     @Override
-    public long occurredOn() {
+    public Instant occurredOn() {
         return occurredTime;
     }
 

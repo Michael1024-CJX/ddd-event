@@ -6,6 +6,7 @@ import org.ddd.event.domain.StorableEvent;
 import org.ddd.event.domain.StorableSubscriber;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class EventConverter {
         Event event = storableEvent.getEvent();
         eventDO.setEventId(event.getEventId());
         eventDO.setEventType(event.getClass().getTypeName());
-        eventDO.setOccurredOn(new Timestamp(event.occurredOn()));
+        eventDO.setOccurredOn(Timestamp.from(event.occurredOn()));
         eventDO.setSourceType(event.getSource().getClass().getTypeName());
         eventDO.setNumOfConsumer(storableEvent.getNumOfConsumer());
         eventDO.setStatus(storableEvent.getStatus());
@@ -43,8 +44,11 @@ public class EventConverter {
     public SubscriberDO toSubscriberDO(StorableSubscriber subscriber) {
         SubscriberDO subscriberDO = new SubscriberDO();
         subscriberDO.setConsumed(subscriber.isConsumed());
-        subscriberDO.setConsumedOn(new Timestamp(subscriber.getConsumedOn()));
-        subscriberDO.setEventId(subscriberDO.getEventId());
+        Instant consumedOn = subscriber.getConsumedOn();
+        if (consumedOn != null) {
+            subscriberDO.setConsumedOn(Timestamp.from(consumedOn));
+        }
+        subscriberDO.setEventId(subscriber.getEventId());
         subscriberDO.setSubscriberType(subscriber.getSubscriberType());
         return subscriberDO;
     }
@@ -76,7 +80,10 @@ public class EventConverter {
                 subscriberDO.getSubscriberType());
 
         storableSubscriber.setConsumed(subscriberDO.isConsumed());
-        storableSubscriber.setConsumedOn(subscriberDO.getConsumedOn().getTime());
+        Timestamp consumedOn = subscriberDO.getConsumedOn();
+        if (consumedOn != null){
+            storableSubscriber.setConsumedOn(consumedOn.toInstant());
+        }
         storableSubscriber.setId(subscriberDO.getId());
 
         return storableSubscriber;
