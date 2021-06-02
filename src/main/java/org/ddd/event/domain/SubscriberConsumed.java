@@ -19,6 +19,9 @@ public class SubscriberConsumed implements TransactionCallback{
     @Override
     public void callback() {
         StorableEvent storableEvent = eventStore.find(eventId);
+        if (storableEvent == null){
+            return;
+        }
         storableEvent.subscriberConsumed(subscriberType);
         eventStore.storeEvent(storableEvent);
     }

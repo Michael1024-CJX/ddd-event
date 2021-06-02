@@ -1,5 +1,6 @@
 package org.ddd.event.domain;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
  * @date 2021/5/30 19:06
  */
 @Setter
+@Getter
 @ToString
 public class StorableEvent {
     private final static int MAX_FAIL_TIMES = 5;
@@ -87,13 +89,12 @@ public class StorableEvent {
         return event.getEventId();
     }
 
-    public Event getEvent() {
-        return event;
-    }
-
-    private enum EventStatus {
+    public enum EventStatus {
         RUNNING,
         FAILED,
         FINISHED;
     }
+
+    // JPA Entity Id
+    private Long id;
 }

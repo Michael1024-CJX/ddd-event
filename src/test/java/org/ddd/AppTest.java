@@ -2,6 +2,7 @@ package org.ddd;
 
 import static org.junit.Assert.assertTrue;
 
+import org.ddd.demo.impl.DemoComponent;
 import org.ddd.demo.impl.FailEvent;
 import org.ddd.demo.impl.TestEvent;
 import org.ddd.event.domain.EventPublisher;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * Unit test for simple App.
@@ -26,7 +28,8 @@ public class AppTest {
     private EventPublisher publisher;
     @Autowired
     private EventStore eventStore;
-
+    @Autowired
+    private DemoComponent demoComponent;
 
     @Test
     @Transactional
@@ -52,17 +55,11 @@ public class AppTest {
         FailEvent failEvent = new FailEvent(this);
 
         try {
-            simulateTransaction(failEvent);
+            demoComponent.simulateTransaction(failEvent);
         } catch (Exception e) {
             e.printStackTrace();
         }
         StorableEvent testStorableEvent = eventStore.find(failEvent.getEventId());
         Assert.assertNull("testEvent success publish", testStorableEvent);
-    }
-
-    @Transactional
-    public void simulateTransaction(FailEvent failEvent) {
-        publisher.publishEvent(failEvent);
-        throw new RuntimeException("模拟事务提交失败");
     }
 }

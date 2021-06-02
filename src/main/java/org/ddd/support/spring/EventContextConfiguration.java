@@ -1,6 +1,6 @@
 package org.ddd.support.spring;
 
-import org.ddd.demo.impl.DefaultEventStore;
+import org.ddd.demo.impl.JpaEventStore;
 import org.ddd.event.domain.*;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.annotation.Bean;
@@ -14,16 +14,6 @@ import java.util.List;
  */
 @Configuration
 public class EventContextConfiguration {
-    @Bean
-    public TransactionListener transactionListener() {
-        return new SpringTransactionListener();
-    }
-
-    @Bean
-    public EventStore eventStore() {
-        return new DefaultEventStore();
-    }
-
     @Bean
     public SubscriberHolder handlerHolder() {
         return new DefaultSubscriberHolder();

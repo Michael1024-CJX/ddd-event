@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Pointcut;
 import org.ddd.event.domain.TransactionCallback;
 import org.ddd.event.domain.TransactionListener;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -12,6 +13,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * @date 2021/5/29 10:25
  */
 @Slf4j
+@Component
 public class SpringTransactionListener implements TransactionListener {
 
     @Override
