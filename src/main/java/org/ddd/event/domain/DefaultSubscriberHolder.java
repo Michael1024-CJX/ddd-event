@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author Michael
- * @date 2021/5/28 20:40
  */
 public class DefaultSubscriberHolder implements SubscriberHolder {
     private final Map<String, SubscriberWrapper> subscribers = new ConcurrentHashMap<>();

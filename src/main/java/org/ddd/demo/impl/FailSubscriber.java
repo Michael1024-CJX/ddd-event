@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Michael
- * @date 2021/5/29 16:32
  */
 @Component
 public class FailSubscriber implements EventSubscriber<FailEvent> {

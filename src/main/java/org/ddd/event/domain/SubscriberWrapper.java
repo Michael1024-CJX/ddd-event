@@ -6,7 +6,6 @@ import java.util.Objects;
 
 /**
  * @author Michael
- * @date 2021/5/31 16:54
  */
 public class SubscriberWrapper {
     private String subscriberType;

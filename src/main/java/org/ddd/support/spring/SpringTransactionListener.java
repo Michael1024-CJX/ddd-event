@@ -10,7 +10,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /**
  * @author Michael
- * @date 2021/5/29 10:25
  */
 @Slf4j
 @Component

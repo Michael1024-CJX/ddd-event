@@ -14,7 +14,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /**
  * @author Michael
- * @date 2021/5/31 13:16
  */
 @Aspect
 @Component

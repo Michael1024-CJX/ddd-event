@@ -2,7 +2,6 @@ package org.ddd.event.domain;
 
 /**
  * @author Michael
- * @date 2021/5/28 19:59
  */
 public class DefaultSubscriberRegister implements EventSubscriberRegister {
     private SubscriberHolder subscriberHolder;

@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Michael
- * @date 2021/5/30 19:38
  */
 public class DefaultExecutor {
     private static Executor executor = new ThreadPoolExecutor(

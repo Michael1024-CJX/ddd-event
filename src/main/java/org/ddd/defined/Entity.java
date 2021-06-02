@@ -2,7 +2,6 @@ package org.ddd.defined;
 
 /**
  * @Author Michael
- * @Date 2021/5/26 13:51
  */
 public interface Entity<T extends Entity, ID> {
     /**

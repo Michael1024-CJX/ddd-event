@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * @author Michael
- * @date 2021/5/29 10:41
  */
 @Configuration
 public class EventContextConfiguration {

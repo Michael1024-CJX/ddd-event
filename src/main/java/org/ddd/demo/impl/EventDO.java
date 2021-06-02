@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 
 /**
  * @author Michael
- * @date 2021/6/2 9:18
  */
 @Data
 @Entity

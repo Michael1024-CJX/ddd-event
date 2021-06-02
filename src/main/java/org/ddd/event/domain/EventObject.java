@@ -5,7 +5,6 @@ import java.util.UUID;
 
 /**
  * @Author Michael
- * @Date 2021/5/26 10:53
  */
 public abstract class EventObject implements Event{
     protected String eventId = UUID.randomUUID().toString();

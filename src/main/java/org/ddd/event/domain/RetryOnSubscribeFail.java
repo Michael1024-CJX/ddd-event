@@ -4,7 +4,6 @@ import java.util.Set;
 
 /**
  * @author Michael
- * @date 2021/6/1 14:18
  */
 public class RetryOnSubscribeFail {
     private SubscriberHolder subscriberHolder;

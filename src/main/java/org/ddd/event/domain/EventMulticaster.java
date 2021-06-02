@@ -4,7 +4,6 @@ import java.util.Set;
 
 /**
  * @Author Michael
- * @Date 2021/5/30 19:32
  */
 public class EventMulticaster implements TransactionCallback {
     private Event event;

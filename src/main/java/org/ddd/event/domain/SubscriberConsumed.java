@@ -2,7 +2,6 @@ package org.ddd.event.domain;
 
 /**
  * @author Michael
- * @date 2021/5/31 14:55
  */
 public class SubscriberConsumed implements TransactionCallback{
     private final EventStore eventStore;

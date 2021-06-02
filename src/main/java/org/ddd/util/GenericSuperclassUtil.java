@@ -7,7 +7,6 @@ import java.lang.reflect.Type;
 
 /**
  * @author Michael
- * @date 2021/5/29 15:53
  */
 public class GenericSuperclassUtil {
     public static Class<?> getInterfaceT(Class aClass, int index) {

@@ -5,7 +5,6 @@ import org.junit.Test;
 
 /**
  * @author Michael
- * @date 2021/6/1 21:38
  */
 public class EventTest {
     @Test

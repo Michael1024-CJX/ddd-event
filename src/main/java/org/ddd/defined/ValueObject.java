@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * @Author Michael
- * @Date 2021/5/26 14:04
  */
 public interface ValueObject<T> extends Serializable {
     /**

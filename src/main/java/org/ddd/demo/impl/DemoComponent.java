@@ -7,7 +7,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /**
  * @author Michael
- * @date 2021/6/2 10:24
  */
 @Component
 public class DemoComponent {

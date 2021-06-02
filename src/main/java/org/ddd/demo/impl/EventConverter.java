@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author Michael
- * @date 2021/6/2 9:43
  */
 public class EventConverter {
     public EventDO toEventDO(StorableEvent storableEvent) {

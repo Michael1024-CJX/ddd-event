@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author Michael
- * @date 2021/5/27 22:28
  */
 @Component
 public class JpaEventStore implements EventStore {

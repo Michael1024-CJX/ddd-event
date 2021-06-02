@@ -4,7 +4,6 @@ import java.util.Set;
 
 /**
  * @author Michael
- * @date 2021/5/28 19:58
  */
 public class DefaultEventPublisher implements EventPublisher {
     private SubscriberHolder subscriberHolder;

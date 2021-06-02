@@ -4,7 +4,6 @@ import org.ddd.event.domain.EventObject;
 
 /**
  * @author Michael
- * @date 2021/5/29 15:25
  */
 public class TestEvent extends EventObject {
     public TestEvent(Object source) {
