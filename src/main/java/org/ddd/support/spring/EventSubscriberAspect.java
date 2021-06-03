@@ -37,16 +37,7 @@ public class EventSubscriberAspect {
     }
 
     private void registerSubscriberConsumedCallback(SubscriberConsumed subscriberConsumed) {
-        if (SpringTransactionManager.isOpenTransaction()) {
-            SpringTransactionManager.registerBeforeCommitCallback(subscriberConsumed);
-        }else {
-            callbackWithNoTransaction(subscriberConsumed);
-        }
-    }
-
-    private void callbackWithNoTransaction(TransactionCallback callback) {
-        log.warn("transaction is not open, callback method is not in transaction");
-        callback.callback();
+        SpringTransactionManager.registerBeforeCommitCallback(subscriberConsumed);
     }
 
     private SubscriberId getSubscriberId(JoinPoint joinPoint) {

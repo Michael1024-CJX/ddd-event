@@ -14,11 +14,7 @@ public class SpringTransactionListener implements TransactionListener {
 
     @Override
     public void afterCommit(TransactionCallback callback) {
-        if (SpringTransactionManager.isOpenTransaction()){
-            SpringTransactionManager.registerAfterCommitCallback(callback);
-        }else {
-            callbackWithNoTransaction(callback);
-        }
+        SpringTransactionManager.registerAfterCommitCallback(callback);
     }
 
     private void callbackWithNoTransaction(TransactionCallback callback) {
