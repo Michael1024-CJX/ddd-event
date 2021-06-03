@@ -39,30 +39,14 @@ public class TransactionAspect {
     }
 
     private void registerSubscriberConsumedCallback(SubscriberConsumed subscriberConsumed) {
-        if (isOpenTransaction()) {
-            registerTransactionCallback(subscriberConsumed);
+        if (SpringTransactionManager.isOpenTransaction()) {
+            SpringTransactionManager.registerBeforeCommitCallback(subscriberConsumed);
         }else {
-            callback(subscriberConsumed);
+            callbackWithNoTransaction(subscriberConsumed);
         }
     }
 
-    private boolean isOpenTransaction() {
-        return TransactionSynchronizationManager.isSynchronizationActive();
-    }
-
-    private void registerTransactionCallback(TransactionCallback callback) {
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void beforeCommit(boolean readOnly) {
-                if (readOnly) {
-                    throw new IllegalStateException("read only 状态下不可修改事件的状态");
-                }
-                callback.callback();
-            }
-        });
-    }
-
-    private void callback(TransactionCallback callback) {
+    private void callbackWithNoTransaction(TransactionCallback callback) {
         log.warn("transaction is not open, callback method is not in transaction");
         callback.callback();
     }

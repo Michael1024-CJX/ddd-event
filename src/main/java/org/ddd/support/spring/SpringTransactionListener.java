@@ -17,16 +17,15 @@ public class SpringTransactionListener implements TransactionListener {
 
     @Override
     public void afterCommit(TransactionCallback callback) {
-        if (TransactionSynchronizationManager.isSynchronizationActive()){
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void afterCommit() {
-                    callback.callback();
-                }
-            });
+        if (SpringTransactionManager.isOpenTransaction()){
+            SpringTransactionManager.registerAfterCommitCallback(callback);
         }else {
-            log.warn("当前保存事件的操作不在事务中进行");
-            callback.callback();
+            callbackWithNoTransaction(callback);
         }
+    }
+
+    private void callbackWithNoTransaction(TransactionCallback callback) {
+        log.warn("当前保存事件的操作不在事务中进行");
+        callback.callback();
     }
 }
