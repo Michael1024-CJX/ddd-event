@@ -26,14 +26,8 @@ public class DefaultEventPublisher implements EventPublisher {
 
     private void storeEvent(Event event) {
         final Set<SubscriberWrapper> subscriber = getSubscriberByEvent(event);
-        final StorableEvent storableEvent = constructStorableEvent(event, subscriber);
+        final StorableEvent storableEvent = StorableEvent.newStorableEvent(event, subscriber);
         store(storableEvent);
-    }
-
-    private StorableEvent constructStorableEvent(Event event, Set<SubscriberWrapper> subscriber) {
-        final StorableEvent storableEvent = StorableEvent.newStorableEvent(event);
-        storableEvent.addSubscribers(subscriber);
-        return storableEvent;
     }
 
     private void multicastEvent(Event event) {

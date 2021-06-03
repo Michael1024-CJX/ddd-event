@@ -26,13 +26,15 @@ public class StorableEvent {
         return new StorableEvent(event);
     }
 
+    public static StorableEvent newStorableEvent(Event event, Set<SubscriberWrapper> eventSubscribers) {
+        final StorableEvent storableEvent = new StorableEvent(event);
+        eventSubscribers.forEach(storableEvent::addSubscriber);
+        return storableEvent;
+    }
+
     private StorableEvent(Event event) {
         this.event = event;
         this.status = EventStatus.RUNNING;
-    }
-
-    void addSubscribers(Set<SubscriberWrapper> eventSubscribers) {
-        eventSubscribers.forEach(this::addSubscriber);
     }
 
     void addSubscriber(SubscriberWrapper eventSubscriber) {
