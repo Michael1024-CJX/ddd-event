@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultSubscriberHolder implements SubscriberHolder {
     private final Map<String, SubscriberWrapper> subscribers = new ConcurrentHashMap<>();
-    private final Map<Class<? extends Event>, Set<SubscriberWrapper>> cacheSubscribers = new ConcurrentHashMap<>();
+    private final Map<String, Set<SubscriberWrapper>> cacheSubscribers = new ConcurrentHashMap<>();
 
     @Override
     public void addSubscriber(SubscriberWrapper subscriberWrapper) {
@@ -19,17 +19,48 @@ public class DefaultSubscriberHolder implements SubscriberHolder {
 
     @Override
     public Set<SubscriberWrapper> getSubscriber(Event event) {
-        Class<? extends Event> eventType = event.getClass();
-        if (cacheSubscribers.containsKey(eventType)) {
-            return cacheSubscribers.get(eventType);
+        if (isCache(event)) {
+            return getFromCache(event);
         }
+        final Set<SubscriberWrapper> subscriberWrappers = searchSubscriber(event);
+        cache(event, subscriberWrappers);
+        return subscriberWrappers;
+    }
 
-        Set<SubscriberWrapper> subscriberSet = subscribers.values().stream()
-                .filter(subscriberWrapper -> subscriberWrapper.getEventType().equals(eventType.getTypeName()))
+    private boolean isCache(Event event) {
+        final String eventType = getEventType(event);
+        return cacheSubscribers.containsKey(eventType);
+    }
+
+    private Set<SubscriberWrapper> getFromCache(Event event) {
+        final String eventType = getEventType(event);
+        return cacheSubscribers.get(eventType);
+    }
+
+    private Set<SubscriberWrapper> searchSubscriber(Event event) {
+        final String eventType = getEventType(event);
+
+        return getSubscriberByEvenType(eventType);
+    }
+
+    private Set<SubscriberWrapper> getSubscriberByEvenType(String eventType) {
+        return subscribers
+                .values()
+                .stream()
+                .filter(subscriberWrapper -> subscriberWrapper.getEventType().equals(eventType))
                 .collect(Collectors.toSet());
+    }
 
-        cacheSubscribers.putIfAbsent(eventType, subscriberSet);
-        return subscriberSet;
+    private void cache(Event event, Set<SubscriberWrapper> subscriberSet) {
+        if (subscriberSet != null && !subscriberSet.isEmpty()){
+            final String eventType = getEventType(event);
+            cacheSubscribers.putIfAbsent(eventType, subscriberSet);
+        }
+    }
+
+    private String getEventType(Event event) {
+        final Class<? extends Event> aClass = event.getClass();
+        return aClass.getTypeName();
     }
 
     @Override

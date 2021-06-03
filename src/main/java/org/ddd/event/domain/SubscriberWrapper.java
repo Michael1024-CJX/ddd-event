@@ -1,5 +1,6 @@
 package org.ddd.event.domain;
 
+import lombok.Getter;
 import org.ddd.util.GenericSuperclassUtil;
 
 import java.util.Objects;
@@ -7,6 +8,7 @@ import java.util.Objects;
 /**
  * @author Michael
  */
+@Getter
 public class SubscriberWrapper {
     private String subscriberType;
     private String eventType;
@@ -16,18 +18,6 @@ public class SubscriberWrapper {
         this.subscriberType = originSubscriberType.getTypeName();
         this.eventType = GenericSuperclassUtil.getInterfaceT(originSubscriberType, 0).getTypeName();
         this.eventSubscriber = eventSubscriber;
-    }
-
-    public String getSubscriberType() {
-        return subscriberType;
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public EventSubscriber getEventSubscriber() {
-        return eventSubscriber;
     }
 
     @Override

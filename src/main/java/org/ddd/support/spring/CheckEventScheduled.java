@@ -7,24 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author Michael
  */
 @Component
 @Slf4j
 public class CheckEventScheduled {
-//    private final String taskCron = "0 0/1 * ?"; //每分钟执行一次
-    private static Executor executor = new ThreadPoolExecutor(
-            10,
-            10,
-            6,
-            TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(50));
 
     private EventStore eventStore;
     private SubscriberHolder subscriberHolder;
@@ -43,7 +31,7 @@ public class CheckEventScheduled {
         }
         for (StorableEvent storableEvent : notFinishEvent) {
             RetryOnSubscribeFail retryTask = new RetryOnSubscribeFail(subscriberHolder, storableEvent);
-            executor.execute(retryTask::reConsumerEvent);
+            DefaultExecutor.execute(retryTask::retry);
         }
     }
 }

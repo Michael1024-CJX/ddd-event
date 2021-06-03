@@ -5,9 +5,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.ddd.event.domain.Event;
-import org.ddd.event.domain.EventStore;
-import org.ddd.event.domain.SubscriberConsumed;
+import org.ddd.event.domain.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -31,24 +29,53 @@ public class TransactionAspect {
 
     @After("interfacePointCut()")
     public void after(JoinPoint joinPoint) {
-        Event event = getEvent(joinPoint.getArgs());
-        String eventId = event.getEventId();
-        String subscriberType = joinPoint.getTarget().getClass().getTypeName();
+        afterDo(joinPoint);
+    }
 
-        if (TransactionSynchronizationManager.isSynchronizationActive()) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void beforeCommit(boolean readOnly) {
-                    if (readOnly) {
-                        throw new IllegalStateException("read only 状态下不可修改事件的状态");
-                    }
-                    new SubscriberConsumed(eventStore, eventId, subscriberType).callback();
-                }
-            });
-        } else {
-            log.warn("subscriber[{}]未开启事务，可能影响event[{}]的存储", subscriberType, eventId);
-            new SubscriberConsumed(eventStore, eventId, subscriberType).callback();
+    private void afterDo(JoinPoint joinPoint) {
+        final SubscriberId subscriberId = getSubscriberId(joinPoint);
+        final SubscriberConsumed subscriberConsumed = new SubscriberConsumed(eventStore, subscriberId);
+        registerSubscriberConsumedCallback(subscriberConsumed);
+    }
+
+    private void registerSubscriberConsumedCallback(SubscriberConsumed subscriberConsumed) {
+        if (isOpenTransaction()) {
+            registerTransactionCallback(subscriberConsumed);
+        }else {
+            callback(subscriberConsumed);
         }
+    }
+
+    private boolean isOpenTransaction() {
+        return TransactionSynchronizationManager.isSynchronizationActive();
+    }
+
+    private void registerTransactionCallback(TransactionCallback callback) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void beforeCommit(boolean readOnly) {
+                if (readOnly) {
+                    throw new IllegalStateException("read only 状态下不可修改事件的状态");
+                }
+                callback.callback();
+            }
+        });
+    }
+
+    private void callback(TransactionCallback callback) {
+        log.warn("transaction is not open, callback method is not in transaction");
+        callback.callback();
+    }
+
+    private SubscriberId getSubscriberId(JoinPoint joinPoint) {
+        String eventId = getEventId(joinPoint);
+        String subscriberType = getSubscriberType(joinPoint);
+        return new SubscriberId(eventId, subscriberType);
+    }
+
+    private String getEventId(JoinPoint joinPoint) {
+        Event event = getEvent(joinPoint.getArgs());
+        return event.getEventId();
     }
 
     private Event getEvent(Object[] args) {
@@ -60,5 +87,10 @@ public class TransactionAspect {
             }
         }
         throw new IllegalArgumentException("未获取到 event 参数");
+    }
+
+    private String getSubscriberType(JoinPoint joinPoint) {
+        final Object target = joinPoint.getTarget();
+        return target.getClass().getTypeName();
     }
 }

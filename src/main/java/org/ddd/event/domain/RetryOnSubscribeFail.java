@@ -1,6 +1,7 @@
 package org.ddd.event.domain;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Michael
@@ -14,20 +15,28 @@ public class RetryOnSubscribeFail {
         this.storableEvent = event;
     }
 
-    public void reConsumerEvent() {
-        Set<StorableSubscriber> notHandleSubscriber = storableEvent.getNotHandleSubscriber();
-
-        for (StorableSubscriber storableSubscriber : notHandleSubscriber) {
-            DefaultExecutor.execute(() ->
-                    executeSubscriber(storableSubscriber.getSubscriberType(), storableEvent.getEvent()));
-        }
+    public void retry() {
+        Set<SubscriberWrapper> needReExecutedSubscriber = getNotDoneSubscriber();
+        retryMulticast(needReExecutedSubscriber);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void executeSubscriber(String subscriberType, Event event) {
-        SubscriberWrapper subscriber = subscriberHolder.getSubscriber(subscriberType);
-        EventSubscriber eventSubscriber = subscriber.getEventSubscriber();
-        eventSubscriber.handle(event);
+    private Set<SubscriberWrapper> getNotDoneSubscriber() {
+        final Set<StorableSubscriber> notHandleSubscriber = storableEvent.getNotHandleSubscriber();
+        return notHandleSubscriber
+                .stream()
+                .map(StorableSubscriber::getSubscriberId)
+                .map(SubscriberId::subscriberType)
+                .map(this::getSubscriberWrapper)
+                .collect(Collectors.toSet());
+    }
+
+    private SubscriberWrapper getSubscriberWrapper(String subscriberType) {
+        return subscriberHolder.getSubscriber(subscriberType);
+    }
+
+    private void retryMulticast(Set<SubscriberWrapper> needReExecutedSubscriber) {
+        final EventMulticaster multicaster = new EventMulticaster(storableEvent.getEvent(), needReExecutedSubscriber);
+        multicaster.multicastEvent();
     }
 
 }

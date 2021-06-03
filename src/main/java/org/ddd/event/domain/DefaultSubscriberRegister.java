@@ -13,10 +13,7 @@ public class DefaultSubscriberRegister implements EventSubscriberRegister {
     @Override
     public void registerSubscriber(Class<?> aClass, EventSubscriber eventSubscriber) {
         SubscriberWrapper subscriberWrapper = new SubscriberWrapper(aClass, eventSubscriber);
-        //Stream.of(testHandler.getClass().getMethods())
-        // .filter(method -> method.getName().equals("handle"))
-        // .map(method -> method.getParameters())
-        // .collect(Collectors.toList())
+
         subscriberHolder.addSubscriber(subscriberWrapper);
     }
 }

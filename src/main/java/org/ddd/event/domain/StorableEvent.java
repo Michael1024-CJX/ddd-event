@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +17,7 @@ public class StorableEvent {
     private final static int MAX_FAIL_TIMES = 5;
     private Event event;
     private EventStatus status;
-    private Set<StorableSubscriber> subscribers;
+    private Map<SubscriberId, StorableSubscriber> subscribers;
     private int numOfConsumer;
 
     public static StorableEvent newStorableEvent(Event event) {
@@ -35,71 +33,85 @@ public class StorableEvent {
     private StorableEvent(Event event) {
         this.event = event;
         this.status = EventStatus.RUNNING;
+        this.subscribers = new HashMap<>();
     }
 
-    void addSubscriber(SubscriberWrapper eventSubscriber) {
-        if (subscribers == null) {
-            subscribers = new HashSet<>();
-        }
-        StorableSubscriber storableSubscriber = new StorableSubscriber(getEventId(),
-                eventSubscriber.getSubscriberType());
-        subscribers.add(storableSubscriber);
-    }
-
-    void subscriberConsumed(String subscriberType) {
-        if (subscribers == null) {
-            return;
-        }
-        for (StorableSubscriber subscriber : subscribers) {
-            if (subscriberType.equals(subscriber.getSubscriberType())) {
-                subscriber.consume();
-            }
-        }
-        addConsumerNumber();
-        changeStatus();
-    }
-
-    Set<StorableSubscriber> getNotHandleSubscriber() {
-        return Collections.unmodifiableSet(
-                subscribers
-                        .stream()
-                        .filter(storableSubscriber -> !storableSubscriber.isConsumed())
-                        .collect(Collectors.toSet())
-        );
-    }
-
-    public boolean isRunning() {
-        return this.status == EventStatus.RUNNING;
-    }
-
-    public boolean isFinished() {
-        return this.status == EventStatus.FINISHED;
-    }
-
-    public boolean isFailed() {
-        return this.status == EventStatus.FAILED;
+    public void addSubscriber(SubscriberWrapper eventSubscriber) {
+        StorableSubscriber storableSubscriber = new StorableSubscriber(getEventId(), eventSubscriber.getSubscriberType());
+        addSubscriber(storableSubscriber);
     }
 
     public String getEventId() {
         return event.getEventId();
     }
 
-    private void addConsumerNumber() {
+    private void addSubscriber(StorableSubscriber storableSubscriber) {
+        subscribers.put(storableSubscriber.getSubscriberId(), storableSubscriber);
+    }
+
+    public void consume(SubscriberId subscriberId) {
+        if (noSubscribers()) {
+            return;
+        }
+        final StorableSubscriber storableSubscriber = getStorableSubscriber(subscriberId);
+        storableSubscriber.consume();
+        increaseNumOfConsume();
+        changeStatus();
+    }
+
+    private StorableSubscriber getStorableSubscriber(SubscriberId subscriberId) {
+        return subscribers.get(subscriberId);
+    }
+
+    private void increaseNumOfConsume() {
         numOfConsumer++;
     }
 
     private void changeStatus() {
-        if (subscribers == null || subscribers.stream().allMatch(StorableSubscriber::isConsumed)) {
+        if (isFinished()) {
             this.status = EventStatus.FINISHED;
             return;
         }
 
-        if (this.numOfConsumer >= MAX_FAIL_TIMES) {
+        if (isFailed()) {
             this.status = EventStatus.FAILED;
             return;
         }
 
         this.status = EventStatus.RUNNING;
+    }
+
+    public Set<StorableSubscriber> getNotHandleSubscriber() {
+        return Collections.unmodifiableSet(
+                subscribers.values().stream()
+                        .filter(storableSubscriber -> !storableSubscriber.isConsumed())
+                        .collect(Collectors.toSet())
+        );
+    }
+
+    public boolean isRunning() {
+        return !noSubscribers() && numOfConsumeIsLegal() && !allSubscriberIsConsumed();
+    }
+
+    public boolean isFinished() {
+        return noSubscribers() ||
+                (numOfConsumeIsLegal() && allSubscriberIsConsumed());
+    }
+
+    public boolean isFailed() {
+        return !numOfConsumeIsLegal() && !allSubscriberIsConsumed();
+    }
+
+    private boolean allSubscriberIsConsumed() {
+        return subscribers.values().stream().allMatch(StorableSubscriber::isConsumed);
+    }
+
+    private boolean numOfConsumeIsLegal() {
+        return this.numOfConsumer < MAX_FAIL_TIMES;
+    }
+
+    private boolean noSubscribers() {
+        return subscribers == null || subscribers.isEmpty();
     }
 
     public enum EventStatus {

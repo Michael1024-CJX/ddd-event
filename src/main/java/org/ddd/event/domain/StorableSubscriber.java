@@ -14,14 +14,12 @@ import java.time.Instant;
 @Getter
 @ToString
 public class StorableSubscriber {
-    private String eventId;
-    private String subscriberType;
+    private SubscriberId subscriberId;
     private boolean consumed;
     private Instant consumedOn;
 
     public StorableSubscriber(String eventId, String subscriberType) {
-        this.eventId = eventId;
-        this.subscriberType = subscriberType;
+        this.subscriberId = new SubscriberId(eventId, subscriberType);
     }
 
     public void consume() {

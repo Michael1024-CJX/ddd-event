@@ -5,23 +5,29 @@ package org.ddd.event.domain;
  */
 public class SubscriberConsumed implements TransactionCallback{
     private final EventStore eventStore;
-    private String eventId;
-    private String subscriberType;
+    private SubscriberId subscriberId;
 
-    public SubscriberConsumed(EventStore eventStore, String eventId, String subscriberType) {
+    public SubscriberConsumed(EventStore eventStore, SubscriberId subscriberId) {
         this.eventStore = eventStore;
-        this.eventId = eventId;
-        this.subscriberType = subscriberType;
+        this.subscriberId = subscriberId;
     }
 
 
     @Override
     public void callback() {
-        StorableEvent storableEvent = eventStore.find(eventId);
+        StorableEvent storableEvent = getEvent();
         if (storableEvent == null){
             return;
         }
-        storableEvent.subscriberConsumed(subscriberType);
+        storableEvent.consume(subscriberId);
+        storeEvent(storableEvent);
+    }
+
+    private StorableEvent getEvent() {
+        return eventStore.find(subscriberId.eventId());
+    }
+
+    private void storeEvent(StorableEvent storableEvent) {
         eventStore.storeEvent(storableEvent);
     }
 }
