@@ -4,10 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import org.ddd.event.domain.Event;
 import org.ddd.event.domain.StorableEvent;
 import org.ddd.event.domain.StorableSubscriber;
+import org.ddd.event.domain.SubscriberId;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +50,9 @@ public class EventConverter {
         if (consumedOn != null) {
             subscriberDO.setConsumedOn(Timestamp.from(consumedOn));
         }
-        subscriberDO.setEventId(subscriber.getEventId());
-        subscriberDO.setSubscriberType(subscriber.getSubscriberType());
+        final SubscriberId subscriberId = subscriber.getSubscriberId();
+        subscriberDO.setEventId(subscriberId.eventId());
+        subscriberDO.setSubscriberType(subscriberId.subscriberType());
         return subscriberDO;
     }
 
@@ -60,17 +64,18 @@ public class EventConverter {
             event.setId(eventDO.getId());
             event.setNumOfConsumer(eventDO.getNumOfConsumer());
             event.setStatus(eventDO.getStatus());
-            event.setSubscribers(toEntity(subscriberDOS));
+            event.setSubscribers(toEntityMap(subscriberDOS));
             return event;
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("eventType class not found [" + eventDO.getEventType() + "]", e);
         }
     }
 
-    private Set<StorableSubscriber> toEntity(Set<SubscriberDO> subscriberDOS) {
-        return subscriberDOS.stream()
+    private Map<SubscriberId, StorableSubscriber> toEntityMap(Set<SubscriberDO> subscriberDOS) {
+        return subscriberDOS
+                .stream()
                 .map(this::toEntity)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toMap(StorableSubscriber::getSubscriberId, Function.identity()));
     }
 
     private StorableSubscriber toEntity(SubscriberDO subscriberDO) {
