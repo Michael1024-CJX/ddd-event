@@ -16,9 +16,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class EventSubscriberAspect {
     private final EventStore eventStore;
+    private final SpringTransactionManager springTransactionManager;
 
-    public EventSubscriberAspect(EventStore eventStore) {
+    public EventSubscriberAspect(EventStore eventStore, SpringTransactionManager springTransactionManager) {
         this.eventStore = eventStore;
+        this.springTransactionManager = springTransactionManager;
     }
 
     @Pointcut(value = "target(org.ddd.event.domain.EventSubscriber)")
@@ -37,7 +39,7 @@ public class EventSubscriberAspect {
     }
 
     private void registerSubscriberConsumedCallback(SubscriberConsumed subscriberConsumed) {
-        SpringTransactionManager.registerBeforeCommitCallback(subscriberConsumed);
+        springTransactionManager.registerBeforeCommitCallback(subscriberConsumed);
     }
 
     private SubscriberId getSubscriberId(JoinPoint joinPoint) {

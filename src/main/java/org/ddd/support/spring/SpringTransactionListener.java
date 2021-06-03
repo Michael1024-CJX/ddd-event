@@ -11,10 +11,15 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class SpringTransactionListener implements TransactionListener {
+    private SpringTransactionManager springTransactionManager;
+
+    public SpringTransactionListener(SpringTransactionManager springTransactionManager) {
+        this.springTransactionManager = springTransactionManager;
+    }
 
     @Override
     public void afterCommit(TransactionCallback callback) {
-        SpringTransactionManager.registerAfterCommitCallback(callback);
+        springTransactionManager.registerAfterCommitCallback(callback);
     }
 
     private void callbackWithNoTransaction(TransactionCallback callback) {
