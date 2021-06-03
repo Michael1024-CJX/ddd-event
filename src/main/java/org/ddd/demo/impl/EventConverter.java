@@ -56,7 +56,7 @@ public class EventConverter {
         try {
             Class<?> aClass = Class.forName(eventDO.getEventType());
             Event object = (Event) JSONObject.parseObject(eventDO.getJsonEvent(), aClass);
-            StorableEvent event = new StorableEvent(object);
+            StorableEvent event = StorableEvent.newStorableEvent(object);
             event.setId(eventDO.getId());
             event.setNumOfConsumer(eventDO.getNumOfConsumer());
             event.setStatus(eventDO.getStatus());

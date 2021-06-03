@@ -22,12 +22,20 @@ public class StorableEvent {
     private Set<StorableSubscriber> subscribers;
     private int numOfConsumer;
 
-    public StorableEvent(Event event) {
+    public static StorableEvent newStorableEvent(Event event) {
+        return new StorableEvent(event);
+    }
+
+    private StorableEvent(Event event) {
         this.event = event;
         this.status = EventStatus.RUNNING;
     }
 
-    public void addSubscriber(SubscriberWrapper eventSubscriber) {
+    void addSubscribers(Set<SubscriberWrapper> eventSubscribers) {
+        eventSubscribers.forEach(this::addSubscriber);
+    }
+
+    void addSubscriber(SubscriberWrapper eventSubscriber) {
         if (subscribers == null) {
             subscribers = new HashSet<>();
         }
@@ -36,7 +44,7 @@ public class StorableEvent {
         subscribers.add(storableSubscriber);
     }
 
-    public void subscriberConsumed(String subscriberType) {
+    void subscriberConsumed(String subscriberType) {
         if (subscribers == null) {
             return;
         }
@@ -47,6 +55,31 @@ public class StorableEvent {
         }
         addConsumerNumber();
         changeStatus();
+    }
+
+    Set<StorableSubscriber> getNotHandleSubscriber() {
+        return Collections.unmodifiableSet(
+                subscribers
+                        .stream()
+                        .filter(storableSubscriber -> !storableSubscriber.isConsumed())
+                        .collect(Collectors.toSet())
+        );
+    }
+
+    public boolean isRunning() {
+        return this.status == EventStatus.RUNNING;
+    }
+
+    public boolean isFinished() {
+        return this.status == EventStatus.FINISHED;
+    }
+
+    public boolean isFailed() {
+        return this.status == EventStatus.FAILED;
+    }
+
+    public String getEventId() {
+        return event.getEventId();
     }
 
     private void addConsumerNumber() {
@@ -65,28 +98,6 @@ public class StorableEvent {
         }
 
         this.status = EventStatus.RUNNING;
-    }
-
-    public Set<StorableSubscriber> getNotHandleSubscriber() {
-        return Collections.unmodifiableSet(subscribers.stream()
-                .filter(storableSubscriber -> !storableSubscriber.isConsumed())
-                .collect(Collectors.toSet()));
-    }
-
-    public boolean isRunning() {
-        return this.status == EventStatus.RUNNING;
-    }
-
-    public boolean isFinished() {
-        return this.status == EventStatus.FINISHED;
-    }
-
-    public boolean isFailed() {
-        return this.status == EventStatus.FAILED;
-    }
-
-    public String getEventId() {
-        return event.getEventId();
     }
 
     public enum EventStatus {
