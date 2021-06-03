@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class TransactionAspect {
+public class EventSubscriberAspect {
     private final EventStore eventStore;
 
-    public TransactionAspect(EventStore eventStore) {
+    public EventSubscriberAspect(EventStore eventStore) {
         this.eventStore = eventStore;
     }
 
