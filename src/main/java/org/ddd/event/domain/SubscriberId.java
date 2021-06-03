@@ -3,7 +3,7 @@ package org.ddd.event.domain;
 import java.util.Objects;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class SubscriberId {
     private String eventId;

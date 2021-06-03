@@ -1,12 +1,9 @@
 package org.ddd.support.spring;
 
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.Pointcut;
 import org.ddd.event.domain.TransactionCallback;
 import org.ddd.event.domain.TransactionListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * @author Michael

@@ -1,6 +1,5 @@
 package org.ddd.support.spring;
 
-import org.ddd.demo.impl.JpaEventStore;
 import org.ddd.event.domain.*;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.annotation.Bean;

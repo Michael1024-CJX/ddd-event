@@ -5,7 +5,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class SpringTransactionManager {
     public static boolean isOpenTransaction() {

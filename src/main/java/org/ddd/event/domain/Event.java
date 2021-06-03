@@ -3,7 +3,7 @@ package org.ddd.event.domain;
 import java.time.Instant;
 
 /**
- * @Author Michael
+ * @author Michael
  */
 public interface Event {
     String getEventId();

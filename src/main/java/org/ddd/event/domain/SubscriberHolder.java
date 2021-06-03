@@ -3,7 +3,7 @@ package org.ddd.event.domain;
 import java.util.Set;
 
 /**
- * @Author Michael
+ * @author Michael
  */
 public interface SubscriberHolder {
     void addSubscriber(SubscriberWrapper subscriberWrapper);

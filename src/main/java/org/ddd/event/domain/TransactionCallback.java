@@ -1,8 +1,7 @@
 package org.ddd.event.domain;
 
-
 /**
- * @Author Michael
+ * @author Michael
  */
 public interface TransactionCallback {
     void callback();

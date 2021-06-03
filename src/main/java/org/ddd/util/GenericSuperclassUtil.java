@@ -1,7 +1,5 @@
 package org.ddd.util;
 
-import org.ddd.event.domain.EventSubscriber;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 

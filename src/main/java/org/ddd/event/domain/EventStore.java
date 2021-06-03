@@ -3,7 +3,7 @@ package org.ddd.event.domain;
 import java.util.List;
 
 /**
- * @Author Michael
+ * @author Michael
  */
 public interface EventStore {
     void storeEvent(StorableEvent event);
