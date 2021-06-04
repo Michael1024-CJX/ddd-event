@@ -19,31 +19,24 @@ public class DefaultSubscriberHolder implements SubscriberHolder {
 
     @Override
     public Set<SubscriberWrapper> getSubscriber(Event event) {
-        if (isCache(event)) {
-            return getFromCache(event);
+        String eventType = event.eventType();
+        if (isCached(eventType)) {
+            return getFromCache(eventType);
         }
-        final Set<SubscriberWrapper> subscriberWrappers = searchSubscriber(event);
-        cache(event, subscriberWrappers);
+        final Set<SubscriberWrapper> subscriberWrappers = searchSubscriber(eventType);
+        cache(eventType, subscriberWrappers);
         return subscriberWrappers;
     }
 
-    private boolean isCache(Event event) {
-        final String eventType = getEventType(event);
+    private boolean isCached(String eventType) {
         return cacheSubscribers.containsKey(eventType);
     }
 
-    private Set<SubscriberWrapper> getFromCache(Event event) {
-        final String eventType = getEventType(event);
+    private Set<SubscriberWrapper> getFromCache(String eventType) {
         return cacheSubscribers.get(eventType);
     }
 
-    private Set<SubscriberWrapper> searchSubscriber(Event event) {
-        final String eventType = getEventType(event);
-
-        return getSubscriberByEvenType(eventType);
-    }
-
-    private Set<SubscriberWrapper> getSubscriberByEvenType(String eventType) {
+    private Set<SubscriberWrapper> searchSubscriber(String eventType) {
         return subscribers
                 .values()
                 .stream()
@@ -51,16 +44,10 @@ public class DefaultSubscriberHolder implements SubscriberHolder {
                 .collect(Collectors.toSet());
     }
 
-    private void cache(Event event, Set<SubscriberWrapper> subscriberSet) {
+    private void cache(String eventType, Set<SubscriberWrapper> subscriberSet) {
         if (subscriberSet != null && !subscriberSet.isEmpty()){
-            final String eventType = getEventType(event);
             cacheSubscribers.putIfAbsent(eventType, subscriberSet);
         }
-    }
-
-    private String getEventType(Event event) {
-        final Class<? extends Event> aClass = event.getClass();
-        return aClass.getTypeName();
     }
 
     @Override

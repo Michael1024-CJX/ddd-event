@@ -29,7 +29,7 @@ public class EventContextConfiguration {
         DefaultSubscriberRegister subscriberRegister = new DefaultSubscriberRegister(subscriberHolder);
         for (EventSubscriber eventSubscriber : eventSubscribers) {
             Class<?> targetClass = AopUtils.getTargetClass(eventSubscriber);
-            subscriberRegister.registerSubscriber(targetClass,eventSubscriber);
+            subscriberRegister.registerSubscriber(targetClass, eventSubscriber);
         }
         return subscriberRegister;
     }

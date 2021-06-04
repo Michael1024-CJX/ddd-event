@@ -8,6 +8,8 @@ import java.time.Instant;
 public interface Event {
     String getEventId();
 
+    String eventType();
+
     Object getSource();
 
     Instant occurredOn();

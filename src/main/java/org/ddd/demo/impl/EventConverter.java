@@ -20,10 +20,12 @@ public class EventConverter {
     public EventDO toEventDO(StorableEvent storableEvent) {
         EventDO eventDO = new EventDO();
         Event event = storableEvent.getEvent();
+        final Object source = event.getSource();
+
         eventDO.setEventId(event.getEventId());
-        eventDO.setEventType(event.getClass().getTypeName());
+        eventDO.setEventType(event.eventType());
         eventDO.setOccurredOn(Timestamp.from(event.occurredOn()));
-        eventDO.setSourceType(event.getSource().getClass().getTypeName());
+        eventDO.setSourceType(source.getClass().getTypeName());
         eventDO.setNumOfConsumer(storableEvent.getNumOfConsumer());
         eventDO.setStatus(storableEvent.getStatus());
 
@@ -36,8 +38,8 @@ public class EventConverter {
         return JSONObject.toJSONString(event);
     }
 
-    public Set<SubscriberDO> toSubscriberDO(Set<StorableSubscriber> subscribers) {
-        return subscribers
+    public Set<SubscriberDO> toSubscriberDO(Map<SubscriberId, StorableSubscriber> subscribers) {
+        return subscribers.values()
                 .stream()
                 .map(this::toSubscriberDO)
                 .collect(Collectors.toSet());

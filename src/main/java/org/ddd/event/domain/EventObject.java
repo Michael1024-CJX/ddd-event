@@ -8,11 +8,13 @@ import java.util.UUID;
  */
 public abstract class EventObject implements Event{
     protected String eventId = UUID.randomUUID().toString();
+    protected String eventType;
     protected Object source;
     protected Instant occurredTime;
 
     public EventObject(Object source) {
         this.source = source;
+        this.eventType = this.getClass().getTypeName();
         this.occurredTime = Instant.now();
     }
 
@@ -29,5 +31,10 @@ public abstract class EventObject implements Event{
     @Override
     public String getEventId() {
         return eventId;
+    }
+
+    @Override
+    public String eventType() {
+        return eventType;
     }
 }
