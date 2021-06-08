@@ -1,25 +1,22 @@
 package org.ddd.demo.impl;
 
-import org.ddd.event.domain.EventStore;
+import org.ddd.event.domain.EventStorage;
 import org.ddd.event.domain.StorableEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * @author Michael
  */
 @Component
-public class JpaEventStore implements EventStore {
+public class JpaEventStorage implements EventStorage {
     private EventRepository eventRepository;
     private SubscriberRepository subscriberRepository;
 
-    public JpaEventStore(EventRepository eventRepository, SubscriberRepository subscriberRepository) {
+    public JpaEventStorage(EventRepository eventRepository, SubscriberRepository subscriberRepository) {
         this.eventRepository = eventRepository;
         this.subscriberRepository = subscriberRepository;
     }

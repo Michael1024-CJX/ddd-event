@@ -19,9 +19,9 @@ public class EventContextConfiguration {
 
     @Bean
     public EventPublisher eventPublisher(SubscriberHolder subscriberHolder,
-                                         EventStore eventStore,
+                                         EventStorage eventStorage,
                                          TransactionListener transactionListener) {
-        return new DefaultEventPublisher(subscriberHolder, eventStore, transactionListener);
+        return new DefaultEventPublisher(subscriberHolder, eventStorage, transactionListener);
     }
 
     @Bean

@@ -7,14 +7,14 @@ import java.util.Set;
  */
 public class DefaultEventPublisher implements EventPublisher {
     private SubscriberHolder subscriberHolder;
-    private EventStore eventStore;
+    private EventStorage eventStorage;
     private TransactionListener transactionListener;
 
     public DefaultEventPublisher(SubscriberHolder subscriberHolder,
-                                 EventStore eventStore,
+                                 EventStorage eventStorage,
                                  TransactionListener transactionListener) {
         this.subscriberHolder = subscriberHolder;
-        this.eventStore = eventStore;
+        this.eventStorage = eventStorage;
         this.transactionListener = transactionListener;
     }
 
@@ -37,7 +37,7 @@ public class DefaultEventPublisher implements EventPublisher {
     }
 
     private void store(StorableEvent storableEvent) {
-        eventStore.storeEvent(storableEvent);
+        eventStorage.storeEvent(storableEvent);
     }
 
     private void monitorTransactionCommit(EventMulticaster multicaster) {

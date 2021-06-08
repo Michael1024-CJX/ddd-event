@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author Michael
  */
-public interface EventStore {
+public interface EventStorage {
     void storeEvent(StorableEvent event);
 
     StorableEvent find(String eventId);

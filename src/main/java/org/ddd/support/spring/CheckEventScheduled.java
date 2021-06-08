@@ -14,18 +14,18 @@ import java.util.List;
 @Slf4j
 public class CheckEventScheduled {
 
-    private EventStore eventStore;
+    private EventStorage eventStorage;
     private SubscriberHolder subscriberHolder;
 
-    public CheckEventScheduled(EventStore eventStore, SubscriberHolder subscriberHolder) {
-        this.eventStore = eventStore;
+    public CheckEventScheduled(EventStorage eventStorage, SubscriberHolder subscriberHolder) {
+        this.eventStorage = eventStorage;
         this.subscriberHolder = subscriberHolder;
     }
 
     @Scheduled(fixedRate = 1000 * 30)
     public void checkEventFinished() {
         log.info("开始执行任务[{}]", "checkEventFinished");
-        List<StorableEvent> notFinishEvent = eventStore.findNotFinishEvent();
+        List<StorableEvent> notFinishEvent = eventStorage.findNotFinishEvent();
         if (CollectionUtils.isEmpty(notFinishEvent)){
             return;
         }

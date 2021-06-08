@@ -4,11 +4,11 @@ package org.ddd.event.domain;
  * @author Michael
  */
 public class SubscriberConsumed implements TransactionCallback{
-    private final EventStore eventStore;
+    private final EventStorage eventStorage;
     private SubscriberId subscriberId;
 
-    public SubscriberConsumed(EventStore eventStore, SubscriberId subscriberId) {
-        this.eventStore = eventStore;
+    public SubscriberConsumed(EventStorage eventStorage, SubscriberId subscriberId) {
+        this.eventStorage = eventStorage;
         this.subscriberId = subscriberId;
     }
 
@@ -24,10 +24,10 @@ public class SubscriberConsumed implements TransactionCallback{
     }
 
     private StorableEvent getEvent() {
-        return eventStore.find(subscriberId.eventId());
+        return eventStorage.find(subscriberId.eventId());
     }
 
     private void storeEvent(StorableEvent storableEvent) {
-        eventStore.storeEvent(storableEvent);
+        eventStorage.storeEvent(storableEvent);
     }
 }

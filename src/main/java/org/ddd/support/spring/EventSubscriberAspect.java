@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class EventSubscriberAspect {
-    private final EventStore eventStore;
+    private final EventStorage eventStorage;
     private final SpringTransactionManager springTransactionManager;
 
-    public EventSubscriberAspect(EventStore eventStore, SpringTransactionManager springTransactionManager) {
-        this.eventStore = eventStore;
+    public EventSubscriberAspect(EventStorage eventStorage, SpringTransactionManager springTransactionManager) {
+        this.eventStorage = eventStorage;
         this.springTransactionManager = springTransactionManager;
     }
 
@@ -34,7 +34,7 @@ public class EventSubscriberAspect {
 
     private void afterDo(JoinPoint joinPoint) {
         final SubscriberId subscriberId = getSubscriberId(joinPoint);
-        final SubscriberConsumed subscriberConsumed = new SubscriberConsumed(eventStore, subscriberId);
+        final SubscriberConsumed subscriberConsumed = new SubscriberConsumed(eventStorage, subscriberId);
         registerSubscriberConsumedCallback(subscriberConsumed);
     }
 

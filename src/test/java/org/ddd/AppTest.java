@@ -6,17 +6,15 @@ import org.ddd.demo.impl.DemoComponent;
 import org.ddd.demo.impl.FailEvent;
 import org.ddd.demo.impl.TestEvent;
 import org.ddd.event.domain.EventPublisher;
-import org.ddd.event.domain.EventStore;
+import org.ddd.event.domain.EventStorage;
 import org.ddd.event.domain.StorableEvent;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * Unit test for simple App.
@@ -27,7 +25,7 @@ public class AppTest {
     @Autowired
     private EventPublisher publisher;
     @Autowired
-    private EventStore eventStore;
+    private EventStorage eventStorage;
     @Autowired
     private DemoComponent demoComponent;
 
@@ -36,7 +34,7 @@ public class AppTest {
     public void publishEventTest() throws Exception {
         TestEvent testEvent = new TestEvent(this);
         publisher.publishEvent(testEvent);
-        StorableEvent testStorableEvent = eventStore.find(testEvent.getEventId());
+        StorableEvent testStorableEvent = eventStorage.find(testEvent.getEventId());
 
         Assert.assertNotNull("testEvent success publish", testStorableEvent);
     }
@@ -45,7 +43,7 @@ public class AppTest {
     public void publishEventNoTXTest() throws Exception {
         TestEvent testEvent = new TestEvent(this);
         publisher.publishEvent(testEvent);
-        StorableEvent testStorableEvent = eventStore.find(testEvent.getEventId());
+        StorableEvent testStorableEvent = eventStorage.find(testEvent.getEventId());
 
         Assert.assertNotNull("testEvent success publish", testStorableEvent);
     }
@@ -59,7 +57,7 @@ public class AppTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        StorableEvent testStorableEvent = eventStore.find(failEvent.getEventId());
+        StorableEvent testStorableEvent = eventStorage.find(failEvent.getEventId());
         Assert.assertNull("testEvent success publish", testStorableEvent);
     }
 }
