@@ -1,4 +1,4 @@
-package org.ddd.event.domain;
+package org.ddd.event;
 
 import lombok.Getter;
 import org.ddd.util.GenericSuperclassUtil;

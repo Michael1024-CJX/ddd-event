@@ -1,4 +1,4 @@
-package org.ddd.event.domain;
+package org.ddd.event;
 
 import java.time.Instant;
 
@@ -8,9 +8,11 @@ import java.time.Instant;
 public interface Event {
     String getEventId();
 
-    String eventType();
-
     Object getSource();
 
     Instant occurredOn();
+
+    default String eventType(){
+        return this.getClass().getTypeName();
+    }
 }

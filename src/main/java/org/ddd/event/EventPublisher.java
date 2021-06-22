@@ -1,4 +1,4 @@
-package org.ddd.event.domain;
+package org.ddd.event;
 
 /**
  * @author Michae

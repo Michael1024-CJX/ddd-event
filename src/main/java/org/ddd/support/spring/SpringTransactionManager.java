@@ -1,7 +1,7 @@
 package org.ddd.support.spring;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ddd.event.domain.TransactionCallback;
+import org.ddd.event.TransactionCallback;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
