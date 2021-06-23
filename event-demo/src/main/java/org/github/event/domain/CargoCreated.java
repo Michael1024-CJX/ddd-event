@@ -1,9 +1,6 @@
-package org.github.event.client;
+package org.github.event.domain;
 
 import org.ddd.event.EventObject;
-import org.github.event.domain.CargoId;
-import org.github.event.domain.CustomerId;
-import org.github.event.domain.Route;
 
 /**
  * @author chenjx

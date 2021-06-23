@@ -3,5 +3,10 @@ package org.github.event.domain;
 /**
  * @author chenjx
  */
-public class TransporterRepository {
+public interface TransporterRepository {
+    Transporter findById(String id);
+
+    Transporter findByRoute(Route route);
+
+    void save(Transporter transporter);
 }
