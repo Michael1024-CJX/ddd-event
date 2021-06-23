@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class DelayAsyncEventPublisher implements EventPublisher {
     private static ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(
-            3,
+            1,
             r -> new Thread(r,"DelayAsyncEventPublisher-Thread"));
     private static final int TASK_DELAY = 3000;
 
