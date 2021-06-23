@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class AsyncEventPublisher implements EventPublisher {
     private BlockingQueue<Event> queue;

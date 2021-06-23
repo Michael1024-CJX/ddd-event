@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class SyncEventPublisher implements EventPublisher {
     private final EventSubscriberRegister subscriberRegister;

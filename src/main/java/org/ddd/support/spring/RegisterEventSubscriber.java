@@ -12,7 +12,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Map;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 @Component
 public class RegisterEventSubscriber implements BeanFactoryPostProcessor {

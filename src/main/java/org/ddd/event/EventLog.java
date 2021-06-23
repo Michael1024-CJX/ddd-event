@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 @Data
 public class EventLog {

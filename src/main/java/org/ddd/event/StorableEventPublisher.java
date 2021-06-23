@@ -1,7 +1,7 @@
 package org.ddd.event;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class StorableEventPublisher implements EventPublisher {
     private EventStorage eventStorage;

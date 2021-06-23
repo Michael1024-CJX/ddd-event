@@ -4,7 +4,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class CheckEventIsSubscribed implements MethodInterceptor {
 

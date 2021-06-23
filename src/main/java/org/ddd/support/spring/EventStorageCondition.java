@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class EventStorageCondition implements Condition {
 

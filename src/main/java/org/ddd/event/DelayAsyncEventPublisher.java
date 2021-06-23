@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class DelayAsyncEventPublisher implements EventPublisher {
     private  ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(

@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author chenjx
+ * @author Michael
  */
 public class InMemoryEventStorage implements EventStorage {
     private Map<String, Event> eventMap = new ConcurrentHashMap<>();
