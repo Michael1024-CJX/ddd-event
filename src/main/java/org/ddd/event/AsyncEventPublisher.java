@@ -26,10 +26,10 @@ public class AsyncEventPublisher implements EventPublisher {
                                EventSubscriberRegister subscriberRegister,
                                EventStorage eventStorage,
                                TransactionListener listener) {
-        Objects.requireNonNull(queue,"BlockingQueue can not null");
-        Objects.requireNonNull(subscriberRegister,"subscriberRegister can not null");
-        Objects.requireNonNull(eventStorage,"eventStorage can not null");
-        Objects.requireNonNull(listener,"listener can not null");
+        Objects.requireNonNull(queue, "BlockingQueue can not null");
+        Objects.requireNonNull(subscriberRegister, "subscriberRegister can not null");
+        Objects.requireNonNull(eventStorage, "eventStorage can not null");
+        Objects.requireNonNull(listener, "listener can not null");
 
         this.queue = queue;
         this.subscriberRegister = subscriberRegister;
@@ -39,12 +39,12 @@ public class AsyncEventPublisher implements EventPublisher {
 
     @Override
     public void publishEvent(Event event) {
-        if (!isStarted){
+        if (!isStarted) {
             start();
         }
         listener.afterCommit(() -> {
             try {
-                queue.offer(event,timeout, TimeUnit.MILLISECONDS);
+                queue.offer(event, timeout, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -52,7 +52,7 @@ public class AsyncEventPublisher implements EventPublisher {
     }
 
     private synchronized void start() {
-        if (!isStarted){
+        if (!isStarted) {
             new Thread(new EventTask(), "AsyncEventPublisher-Thread").start();
             isStarted = true;
         }
@@ -62,21 +62,23 @@ public class AsyncEventPublisher implements EventPublisher {
         this.timeout = timeout;
     }
 
-    private class EventTask implements Runnable{
+    private class EventTask implements Runnable {
 
         @Override
         public void run() {
-            try {
-                publishEvent();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while (true) {
+                try {
+                    publishEvent();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         private void publishEvent() throws InterruptedException {
             final Event event = queue.take();
             final Set<EventSubscriber> subscribers = getSubscribers(event.eventType());
-            retryOnFail(event,subscribers, new AtomicInteger(0));
+            retryOnFail(event, subscribers, new AtomicInteger(0));
         }
 
         private Set<EventSubscriber> getSubscribers(String eventType) {
@@ -93,9 +95,9 @@ public class AsyncEventPublisher implements EventPublisher {
 
                 futures.forEach(CompletableFuture::join);
                 eventStorage.executeSuccess(event);
-            }catch (Exception e){
+            } catch (Exception e) {
                 final int failTime = failTimes.incrementAndGet();
-                if (failTime >= 5){
+                if (failTime >= 5) {
                     eventStorage.executeFail(event);
                     return;
                 }

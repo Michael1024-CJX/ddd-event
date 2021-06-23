@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * @author Michael
  */
@@ -14,8 +16,14 @@ import org.springframework.context.annotation.Configuration;
 public class EventContextConfiguration {
     @Bean
     public EventPublisher eventPublisher(EventSubscriberRegister subscriberRegister,
-                                         EventStorage eventStorage) {
-        return new StorableEventPublisher(eventStorage, new DelayAsyncEventPublisher(subscriberRegister,eventStorage));
+                                         EventStorage eventStorage,
+                                         TransactionListener listener) {
+        return new StorableEventPublisher(eventStorage,
+                new AsyncEventPublisher(
+                        new LinkedBlockingQueue<>(500),
+                        subscriberRegister,
+                        eventStorage,
+                        listener));
     }
 
     @Bean
@@ -41,5 +49,11 @@ public class EventContextConfiguration {
         advisor.setPointcut(pointcut);
         advisor.setAdvice(interceptor);
         return advisor;
+    }
+
+    @Bean
+    public SpringTransactionListener springTransactionListener(){
+        final SpringTransactionManager transactionManager = new SpringTransactionManager();
+        return new SpringTransactionListener(transactionManager);
     }
 }
