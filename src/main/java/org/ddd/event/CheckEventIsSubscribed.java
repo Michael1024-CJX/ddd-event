@@ -1,9 +1,7 @@
-package org.ddd.support.spring;
+package org.ddd.event;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.ddd.event.Event;
-import org.ddd.event.EventStorage;
 
 /**
  * @author chenjx
@@ -20,10 +18,11 @@ public class CheckEventIsSubscribed implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         final Object[] arguments = invocation.getArguments();
         final Event eventArg = getEventArg(arguments);
+        final String subscriberName = invocation.getThis().getClass().getTypeName();
         if (eventArg == null){
             return invocation.proceed();
         }
-        if (eventStorage.existLog(eventArg.getEventId())) {
+        if (eventStorage.existLog(eventArg.getEventId(), subscriberName)) {
             return new Object();
         }
         return invocation.proceed();

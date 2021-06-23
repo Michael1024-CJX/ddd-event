@@ -18,5 +18,5 @@ public interface EventStorage {
 
     void saveLog(EventLog log);
 
-    boolean existLog(String eventId);
+    boolean existLog(String eventId, String subscriberType);
 }

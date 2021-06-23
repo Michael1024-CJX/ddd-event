@@ -1,22 +1,14 @@
-package org.ddd.support.spring;
+package org.ddd.event;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.ddd.event.Event;
-import org.ddd.event.EventLog;
-import org.ddd.event.EventStorage;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Michael
  */
 @Aspect
-@Component
-@Slf4j
 public class EventAspect {
-    static final String EXPRESSION = "target(org.ddd.event.EventSubscriber)";
+    public static final String EXPRESSION = "target(org.ddd.event.EventSubscriber)";
     private final EventStorage eventStorage;
 
     public EventAspect(EventStorage eventStorage) {
