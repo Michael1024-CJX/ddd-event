@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
  * @author Michael
  */
 public class DelayAsyncEventPublisher implements EventPublisher {
-    private  ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(
-            1,
-            r -> new Thread("DelayAsyncEventPublisher-Thread"));
+    private static ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(
+            3,
+            r -> new Thread(r,"DelayAsyncEventPublisher-Thread"));
     private static final int TASK_DELAY = 3000;
 
     private EventSubscriberRegister subscriberRegister;
@@ -51,11 +51,15 @@ public class DelayAsyncEventPublisher implements EventPublisher {
 
         @Override
         public void run() {
-            final List<Event> events = getEvents();
+            try {
+                final List<Event> events = getEvents();
 
-            for (Event event : events) {
-                final Set<EventSubscriber> subscribers = getSubscribers(event.eventType());
-                executeSubscribers(event, subscribers);
+                for (Event event : events) {
+                    final Set<EventSubscriber> subscribers = getSubscribers(event.eventType());
+                    executeSubscribers(event, subscribers);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
 
@@ -87,8 +91,5 @@ public class DelayAsyncEventPublisher implements EventPublisher {
                 }
             }
         }
-
-
-
     }
 }

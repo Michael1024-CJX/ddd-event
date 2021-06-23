@@ -15,7 +15,7 @@ public class EventContextConfiguration {
     @Bean
     public EventPublisher eventPublisher(EventSubscriberRegister subscriberRegister,
                                          EventStorage eventStorage) {
-        return new StorableEventPublisher(eventStorage, new SyncEventPublisher(subscriberRegister,eventStorage));
+        return new StorableEventPublisher(eventStorage, new DelayAsyncEventPublisher(subscriberRegister,eventStorage));
     }
 
     @Bean
