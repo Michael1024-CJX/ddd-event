@@ -1,6 +1,8 @@
 package org.ddd.event;
 
 /**
+ * 具有事件存储功能的EventPublisher
+ *
  * @author Michael
  */
 public class StorableEventPublisher implements EventPublisher {

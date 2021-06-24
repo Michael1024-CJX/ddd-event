@@ -8,6 +8,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
+ * 使用BlockingQueue来发送事件
+ * 依赖事务回调机制，待事务执行成功后将事件发送到阻塞队列中，
+ * 通过BlockingQueue.offer()方法存储事件，并设置超时时间，
+ * 超时后将自动放弃事件分发，
+ * 如果使用了StorableEventPublisher存储事件，则可以后续手动重发事件。
+ * 等待中的事件顺序由BlockingQueue保证，若是公平锁则能保证顺序，否则将不保证。
+ *
+ * 并有一个异步线程循环调用BlockingQueue.take()方法获取事件
+ * 改方法在Queue中不存在元素的时候会自动阻塞
+ *
+ * 为了防止部分监听者执行时间过长，故加入TimeoutFail策略
+ *
  * @author Michael
  */
 public class AsyncEventPublisher implements EventPublisher {
@@ -87,12 +99,12 @@ public class AsyncEventPublisher implements EventPublisher {
         @SuppressWarnings({"rawtypes", "unchecked"})
         private void retryOnFail(Event event, Set<EventSubscriber> subscribers, AtomicInteger failTimes) {
             try {
-                FastFail fastFail = new FastFail(1000, TimeUnit.MILLISECONDS);
+                TimeoutFail timeoutFail = new TimeoutFail(1000, TimeUnit.MILLISECONDS);
                 final List<CompletableFuture<Void>> futures = subscribers.stream()
                         .map(subscriber -> {
                             final CompletableFuture<Void> future = CompletableFuture.runAsync(
                                     () -> subscriber.handle(event), DefaultExecutor.getExecutor());
-                            return fastFail.fastFail(future);
+                            return timeoutFail.fastFail(future);
                         })
                         .collect(Collectors.toList());
 

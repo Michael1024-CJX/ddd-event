@@ -8,6 +8,9 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
+ * 定时发送存储库中的事件，该事件发布器必须配合事件存储功能使用
+ * 使用ScheduledExecutorService实现定时任务
+ *
  * @author Michael
  */
 public class DelayAsyncEventPublisher implements EventPublisher {

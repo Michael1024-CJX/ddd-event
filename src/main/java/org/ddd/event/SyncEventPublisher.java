@@ -7,6 +7,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
+ * 同步事件发送器，会在同一个线程内将事件发送并执行监听者
+ * 注意：由于是同步的，所以需要再保存实体后再发送事件，
+ *      否则可能出现监听者找不到实体的情况。
+ *
  * @author Michael
  */
 public class SyncEventPublisher implements EventPublisher {
