@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * @author chenjx
  */
-public class FastFail {
+public class TimeoutFail {
     private int timeout;
     private TimeUnit timeUnit;
 
@@ -24,7 +24,7 @@ public class FastFail {
                 }
             });
 
-    public FastFail(int timeout, TimeUnit timeUnit) {
+    public TimeoutFail(int timeout, TimeUnit timeUnit) {
         this.timeout = timeout;
         this.timeUnit = timeUnit;
     }
