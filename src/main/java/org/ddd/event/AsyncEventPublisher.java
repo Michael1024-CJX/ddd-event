@@ -3,9 +3,7 @@ package org.ddd.event;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -13,6 +11,7 @@ import java.util.stream.Collectors;
  * @author Michael
  */
 public class AsyncEventPublisher implements EventPublisher {
+
     private BlockingQueue<Event> queue;
     private EventSubscriberRegister subscriberRegister;
     private EventStorage eventStorage;
@@ -88,9 +87,13 @@ public class AsyncEventPublisher implements EventPublisher {
         @SuppressWarnings({"rawtypes", "unchecked"})
         private void retryOnFail(Event event, Set<EventSubscriber> subscribers, AtomicInteger failTimes) {
             try {
+                FastFail fastFail = new FastFail(1000, TimeUnit.MILLISECONDS);
                 final List<CompletableFuture<Void>> futures = subscribers.stream()
-                        .map(subscriber -> CompletableFuture
-                                .runAsync(() -> subscriber.handle(event), DefaultExecutor.getExecutor()))
+                        .map(subscriber -> {
+                            final CompletableFuture<Void> future = CompletableFuture.runAsync(
+                                    () -> subscriber.handle(event), DefaultExecutor.getExecutor());
+                            return fastFail.fastFail(future);
+                        })
                         .collect(Collectors.toList());
 
                 futures.forEach(CompletableFuture::join);
