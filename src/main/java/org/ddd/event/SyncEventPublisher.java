@@ -15,14 +15,11 @@ import java.util.stream.Collectors;
  */
 public class SyncEventPublisher implements EventPublisher {
     private final EventSubscriberRegister subscriberRegister;
-    private final EventStorage eventStorage;
 
-    public SyncEventPublisher(EventSubscriberRegister subscriberRegister, EventStorage eventStorage) {
+    public SyncEventPublisher(EventSubscriberRegister subscriberRegister) {
         Objects.requireNonNull(subscriberRegister,"subscriberRegister can not null");
-        Objects.requireNonNull(eventStorage,"eventStorage can not null");
 
         this.subscriberRegister = subscriberRegister;
-        this.eventStorage = eventStorage;
     }
 
 
@@ -45,6 +42,5 @@ public class SyncEventPublisher implements EventPublisher {
                 .collect(Collectors.toList());
 
         collect.forEach(CompletableFuture::join);
-        eventStorage.executeSuccess(event);
     }
 }

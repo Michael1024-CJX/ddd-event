@@ -25,18 +25,13 @@ public class InMemoryEventStorage implements EventStorage {
     }
 
     @Override
-    public List<Event> findNotFinishEvent() {
+    public void removeEvent(Event event) {
+
+    }
+
+    @Override
+    public List<Event> findAll() {
         return new ArrayList<>(eventMap.values());
-    }
-
-    @Override
-    public void executeFail(Event event) {
-        eventMap.remove(event.getEventId());
-    }
-
-    @Override
-    public void executeSuccess(Event event) {
-        eventMap.remove(event.getEventId());
     }
 
     @Override

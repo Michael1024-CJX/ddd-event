@@ -24,18 +24,13 @@ public class JpaEventStorage implements EventStorage {
     }
 
     @Override
-    public List<Event> findNotFinishEvent() {
+    public void removeEvent(Event event) {
+
+    }
+
+    @Override
+    public List<Event> findAll() {
         return null;
-    }
-
-    @Override
-    public void executeFail(Event event) {
-
-    }
-
-    @Override
-    public void executeSuccess(Event event) {
-
     }
 
     @Override

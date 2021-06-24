@@ -22,7 +22,6 @@ public class EventContextConfiguration {
                 new AsyncEventPublisher(
                         new LinkedBlockingQueue<>(500),
                         subscriberRegister,
-                        eventStorage,
                         listener));
     }
 

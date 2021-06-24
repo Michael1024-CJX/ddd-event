@@ -26,7 +26,6 @@ public class AsyncEventPublisher implements EventPublisher {
 
     private BlockingQueue<Event> queue;
     private EventSubscriberRegister subscriberRegister;
-    private EventStorage eventStorage;
     private TransactionListener listener;
 
     private long timeout = 5000;
@@ -35,16 +34,13 @@ public class AsyncEventPublisher implements EventPublisher {
 
     public AsyncEventPublisher(BlockingQueue<Event> queue,
                                EventSubscriberRegister subscriberRegister,
-                               EventStorage eventStorage,
                                TransactionListener listener) {
         Objects.requireNonNull(queue, "BlockingQueue can not null");
         Objects.requireNonNull(subscriberRegister, "subscriberRegister can not null");
-        Objects.requireNonNull(eventStorage, "eventStorage can not null");
         Objects.requireNonNull(listener, "listener can not null");
 
         this.queue = queue;
         this.subscriberRegister = subscriberRegister;
-        this.eventStorage = eventStorage;
         this.listener = listener;
     }
 
@@ -109,11 +105,9 @@ public class AsyncEventPublisher implements EventPublisher {
                         .collect(Collectors.toList());
 
                 futures.forEach(CompletableFuture::join);
-                eventStorage.executeSuccess(event);
             } catch (Exception e) {
                 final int failTime = failTimes.incrementAndGet();
                 if (failTime >= 5) {
-                    eventStorage.executeFail(event);
                     return;
                 }
                 retryOnFail(event, subscribers, failTimes);

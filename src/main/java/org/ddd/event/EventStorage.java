@@ -10,11 +10,9 @@ public interface EventStorage {
 
     Event find(String eventId);
 
-    List<Event> findNotFinishEvent();
+    void removeEvent(Event event);
 
-    void executeFail(Event event);
-
-    void executeSuccess(Event event);
+    List<Event> findAll();
 
     void saveLog(EventLog log);
 

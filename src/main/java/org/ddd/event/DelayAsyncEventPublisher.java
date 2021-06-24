@@ -60,6 +60,7 @@ public class DelayAsyncEventPublisher implements EventPublisher {
                 for (Event event : events) {
                     final Set<EventSubscriber> subscribers = getSubscribers(event.eventType());
                     executeSubscribers(event, subscribers);
+                    eventStorage.removeEvent(event);
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -67,7 +68,7 @@ public class DelayAsyncEventPublisher implements EventPublisher {
         }
 
         private List<Event> getEvents() {
-            final List<Event> notFinishEvent = eventStorage.findNotFinishEvent();
+            final List<Event> notFinishEvent = eventStorage.findAll();
             if (notFinishEvent == null || notFinishEvent.isEmpty()) {
                 return Collections.emptyList();
             }
@@ -84,15 +85,7 @@ public class DelayAsyncEventPublisher implements EventPublisher {
                     .map(subscriber -> CompletableFuture.runAsync(() -> subscriber.handle(event), DefaultExecutor.getExecutor()))
                     .collect(Collectors.toList());
 
-            for (CompletableFuture<Void> future : futures) {
-                try {
-                    future.get();
-                    eventStorage.executeSuccess(event);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                    eventStorage.executeFail(event);
-                }
-            }
+            futures.forEach(CompletableFuture::join);
         }
     }
 }
